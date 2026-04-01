@@ -6,23 +6,67 @@ from pathlib import Path
 template_content = """
 #!/usr/bin/env python3
 
-import sys
+import sys, argparse
+import pandas as pd
+
+
+def create_parser() -> argparse.ArgumentParser:
+    # Create and configure the argument parser.
+
+    # Returns:
+    #     A configured ArgumentParser instance with all supported
+    #     command-line arguments.
+    
+    parser = argparse.ArgumentParser(
+        description="Parses expression data and generates statistics.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    parser.add_argument(
+        "-d", "--data",
+        type=str,
+        default="data.txt",
+        help="TSV data file",
+    )
+
+    return parser
+
+
+def validate_arguments(args: argparse.Namespace) -> None:
+    # Validate parsed command-line arguments.
+
+    # Checks that all parameter values are within their valid ranges
+    # and that constraints between parameters are satisfied.
+
+    # Args:
+    #     args: Parsed argument namespace from argparse.
+
+    # Raises:
+    #     ValueError: If any argument is invalid or constraints are
+    #         violated (e.g., min-length > max-length).
+    
+    if args.data < 1:
+        raise IOError("Data file does not exist")
+    
 
 def main():
+    try:
+        parser = create_parser()
+        args = parser.parse_args()
 
-    # Standard output example:
-    test_output = "TEST Output: 123456789"
-    sys.stdout.write("This is output data: {test_output}.\\n")
+        print("test")
 
-    # Standard Error example:
-    if not int(test_output):
-    sys.stderr.write("ERROR: The output is not an integer.\\n")
+    except ValueError as exc:
+        sys.stderr.write(f"Error: {exc}\n")
+        return 1
+    except IOError as exc:
+        sys.stderr.write(f"Error: {exc}\n")
+        return 1
 
-    # Redirecting output streams:
-    # $ python3 script.py > stdout.txt 2> stderr.txt
+
 
 if __name__=="__main__":
-    main()
+    sys.exit(main())
 
 """
 
