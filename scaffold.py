@@ -23,10 +23,10 @@ def create_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "-d", "--data",
+        "-o", "--output",
         type=str,
-        default="data.txt",
-        help="TSV data file",
+        default="gene_expression_mutations.csv",
+        help="Export to file",
     )
 
     return parser
@@ -45,8 +45,12 @@ def validate_arguments(args: argparse.Namespace) -> None:
     #     ValueError: If any argument is invalid or constraints are
     #         violated (e.g., min-length > max-length).
     
-    if args.data < 1:
-        raise IOError("Data file does not exist")
+    out_path = Path(args.output)
+
+    if out_path.is_file():
+        usr_ans = input("\nThe output file already exists, overwrite? (y/n)\n")
+        if usr_ans == "n":
+            raise IOError("\nExecution cancelled\n")
     
 
 def main():
